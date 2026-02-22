@@ -221,6 +221,18 @@
 
         .gallery-item:hover img { transform: scale(1.08); }
 
+        /* 當圖片未加載出來時的佔位樣式 (可選) */
+        .img-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f7fa;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
         /* ================= 圖片放大預覽 (Lightbox) 樣式 ================= */
         .lightbox {
             display: none;
@@ -317,20 +329,21 @@
             <p class="sub-title serif-text" data-i18n="subTitle">地球母親 天下母親 世界和平大會</p>
             <p class="location-text" data-i18n="location">法國巴黎 · 聯合國教科文組織總部1號大廳</p>
         </div>
+        
         <div class="days-grid">
-            <div class="day-card" onclick="openDetail('03/07', 'day1')">
+            <div class="day-card" onclick="openDetail('03/07', 1)">
                 <h3 class="day-date">03/07</h3>
                 <p class="day-desc" data-i18n="d1Desc">星期六 · 準備和灑淨儀式</p>
             </div>
-            <div class="day-card" onclick="openDetail('03/08', 'day2')">
+            <div class="day-card" onclick="openDetail('03/08', 2)">
                 <h3 class="day-date">03/08</h3>
                 <p class="day-desc" data-i18n="d2Desc">星期日 · 三時繫念法會</p>
             </div>
-            <div class="day-card" onclick="openDetail('03/09', 'day3')">
+            <div class="day-card" onclick="openDetail('03/09', 3)">
                 <h3 class="day-date">03/09</h3>
                 <p class="day-desc" data-i18n="d3Desc">星期一 · 國際和平大會</p>
             </div>
-            <div class="day-card" onclick="openDetail('03/10', 'day4')">
+            <div class="day-card" onclick="openDetail('03/10', 4)">
                 <h3 class="day-date">03/10</h3>
                 <p class="day-desc" data-i18n="d4Desc">星期二 · 國際和平大會</p>
             </div>
@@ -346,7 +359,7 @@
         <div class="content-layout">
             <div class="video-section">
                 <div class="video-container">
-                    <video id="daily-video" src="video/video_3-7.mp4" 
+                    <video id="daily-video" src="" 
                            style="width: 100%; height: 100%; object-fit: cover;" 
                            controls playsinline loop preload="metadata">
                         您的瀏覽器不支援 HTML5 影片播放。
@@ -370,33 +383,7 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. 在這裡配置您每天預設要顯示的 20 張圖片連結
-        // ==========================================
-        const defaultImages = [
-            "https://i.imgur.com/qAp9zTU.jpg",
-            "https://i.imgur.com/gAK3sQL.jpg",
-            "https://i.imgur.com/jNqUUvs.jpg",
-            "https://i.imgur.com/2o2cV80.jpg",
-            "https://i.imgur.com/3kMqdar.jpg",
-            "https://i.imgur.com/XLXJVWk.jpg",
-            "https://i.imgur.com/gyvUCyp.jpg",
-            "https://i.imgur.com/JMYQD5N.jpg",
-            "https://i.imgur.com/OJrN9SP.jpg",
-            "https://i.imgur.com/qsGSVZv.jpg",
-            "https://i.imgur.com/9vJA5G9.jpg",
-            "https://i.imgur.com/aPuHj1K.jpg",
-            "https://i.imgur.com/tlSkqnE.jpg",
-            "https://i.imgur.com/vootpGO.jpg",
-            "https://i.imgur.com/IcgTrAC.jpg",
-            "https://i.imgur.com/1T2j9CL.jpg",
-            "https://i.imgur.com/pLhvrNR.jpg",
-            "https://i.imgur.com/VKQUFhG.jpg",
-            "https://i.imgur.com/odCfz4m.jpg",
-            "https://i.imgur.com/eBoX1dN.jpg"
-        ];
-
-        // --- 2. 多語言詞典配置 ---
+        // --- 1. 多語言詞典配置 ---
         const translations = {
             zh: {
                 mainTitle: "百年淨空",
@@ -435,10 +422,11 @@
 
         let currentLang = 'zh';
         let currentDateId = '';
-        let currentDayKey = '';
+        let currentDayIndex = 1; // 記錄當前是第幾天 (1-4)
         let currentImageIndex = 0;   
+        let currentImagesArray = []; // 動態存儲當前頁面的 20 張圖片路徑
 
-        // --- 3. 語言切換邏輯 ---
+        // --- 2. 語言切換邏輯 ---
         function switchLanguage(lang) {
             currentLang = lang;
             const dict = translations[lang];
@@ -453,33 +441,46 @@
             }
         }
 
-        // --- 4. 頁面導航邏輯 ---
+        // --- 3. 頁面導航與動態路徑生成 ---
         const homeView = document.getElementById('home-view');
         const detailView = document.getElementById('detail-view');
         const detailTitle = document.getElementById('detail-title');
         const galleryGrid = document.getElementById('gallery-grid');
+        const videoElement = document.getElementById('daily-video');
 
         function updateDetailTitle() {
             detailTitle.innerText = `${currentDateId}${translations[currentLang].highlightSuffix}`;
         }
 
-        function openDetail(dateId, dayKey) {
+        function openDetail(dateId, dayIndex) {
             currentDateId = dateId;
-            currentDayKey = dayKey;
+            currentDayIndex = dayIndex;
             updateDetailTitle();
             
+            // 1. 動態加載影片
+            videoElement.src = `video/day-${dayIndex}/video.mp4`;
+            videoElement.load(); // 強制重新加載新路徑的影片
+
+            // 2. 動態生成 20 張圖片網格
             galleryGrid.innerHTML = ''; 
+            currentImagesArray = []; // 清空之前的陣列
             
-            // 使用配置好的 defaultImages 數組生成圖集
-            defaultImages.forEach((imgUrl, index) => {
+            for (let i = 1; i <= 20; i++) {
+                // 生成圖片的本地相對路徑
+                const imgPath = `photo/day-${dayIndex}/${i}.jpg`;
+                currentImagesArray.push(imgPath);
+                
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
-                item.innerHTML = `<img src="${imgUrl}" alt="Photo ${index + 1}" loading="lazy" onclick="openLightbox(${index})">`;
+                
+                // 加入了 onerror 處理：如果某一天圖片還沒傳滿 20 張，會顯示一個灰色佔位框而不是破圖圖標
+                item.innerHTML = `
+                    <img src="${imgPath}" alt="Photo ${i}" loading="lazy" 
+                         onclick="openLightbox(${i - 1})" 
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>照片上傳中...</div>';">
+                `;
                 galleryGrid.appendChild(item);
-            });
-
-            // 如果未來每天的影片不同，可以在這裡根據 dayKey 動態修改 video 的 src
-            // 例如：document.getElementById('daily-video').src = `video/video_${dayKey}.mp4`;
+            }
 
             homeView.classList.add('hidden');
             detailView.classList.remove('hidden');
@@ -491,20 +492,22 @@
             homeView.classList.remove('hidden');
             currentDateId = '';
             
-            // 停止本地影片播放
-            const video = document.getElementById('daily-video');
-            if (video && !video.paused) {
-                video.pause();
-                video.currentTime = 0; // 將影片進度重置回最開頭
+            // 停止影片播放
+            if (videoElement && !videoElement.paused) {
+                videoElement.pause();
+                videoElement.currentTime = 0; 
             }
         }
 
-        // --- 5. Lightbox 圖片預覽邏輯 ---
+        // --- 4. Lightbox 圖片預覽邏輯 ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
 
         function openLightbox(index) {
+            // 如果點擊的是佔位符(沒有加載出圖片)，就不打開大圖
+            if(!currentImagesArray[index]) return; 
+
             currentImageIndex = index;
             updateLightboxView();
             lightbox.classList.add('active');
@@ -519,19 +522,24 @@
         function changeImage(step) {
             currentImageIndex += step;
             if (currentImageIndex < 0) {
-                currentImageIndex = defaultImages.length - 1;
-            } else if (currentImageIndex >= defaultImages.length) {
+                currentImageIndex = currentImagesArray.length - 1;
+            } else if (currentImageIndex >= currentImagesArray.length) {
                 currentImageIndex = 0;
             }
             updateLightboxView();
         }
 
         function updateLightboxView() {
-            lightboxImg.src = defaultImages[currentImageIndex];
-            lightboxCaption.innerText = `${currentImageIndex + 1} / ${defaultImages.length}`;
+            lightboxImg.src = currentImagesArray[currentImageIndex];
+            lightboxCaption.innerText = `${currentImageIndex + 1} / ${currentImagesArray.length}`;
+            
+            // 處理大圖也可能不存在的情況
+            lightboxImg.onerror = function() {
+                this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='100%' height='100%' fill='%23eee'/><text x='50%' y='50%' font-family='Arial' font-size='24' fill='%23999' text-anchor='middle' dy='.3em'>照片上傳中...</text></svg>";
+            };
         }
 
-        // --- 6. 鍵盤快捷鍵支持 ---
+        // --- 5. 鍵盤快捷鍵支持 ---
         document.addEventListener('keydown', function(event) {
             if (lightbox.classList.contains('active')) {
                 if (event.key === 'Escape') {

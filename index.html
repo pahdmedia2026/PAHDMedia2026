@@ -4,236 +4,366 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>百年淨空 - 每日影像回顧</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         /* ================= 基礎重置與全局樣式 ================= */
         :root {
-            --primary-color: #4a6b8c; 
-            --bg-gradient-start: #e0ecf5; 
-            --bg-gradient-end: #ffffff;
-            --gold-accent: #c0a16b; 
-            --text-dark: #2c3e50;
-            --text-light: #667788;
-            --font-serif: "Noto Serif TC", "Songti TC", "MingLiU", serif;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            --primary-blue: #3a5a78; 
+            --accent-gold: #b4925a;  
+            --text-dark: #2c2c2c;    
+            --text-gray: #666666;
+            --bg-color: #f9fafb;     
+            --card-bg: #ffffff;
+            --font-main: "Parisine", "Noto Sans TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: var(--font-sans);
+            font-family: var(--font-main);
             color: var(--text-dark);
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background-color: var(--bg-color);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
             min-height: 100vh;
-            background-attachment: fixed;
-            line-height: 1.6;
+            line-height: 1.7;
+            letter-spacing: 0.5px;
         }
 
-        .serif-text { font-family: var(--font-serif); }
         .hidden { display: none !important; }
 
         .page-view {
-            animation: fadeIn 0.8s ease-in-out;
-            padding: 2rem 5%;
-            max-width: 1200px;
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 3rem 5%;
+            max-width: 1100px;
             margin: 0 auto;
-            position: relative;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ================= 語言切換區 ================= */
+        /* ================= 高級懸浮版：語言切換器 ================= */
         .lang-switcher {
             position: absolute;
-            top: 1rem;
+            top: 2rem;
             right: 5%;
             z-index: 100;
         }
 
         .lang-switcher select {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid var(--gold-accent);
-            background: rgba(255, 255, 255, 0.8);
-            color: var(--primary-color);
-            font-family: var(--font-sans);
-            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            color: var(--text-gray);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            padding: 0.5rem 2.2rem 0.5rem 1rem; 
             cursor: pointer;
-            backdrop-filter: blur(5px);
+            transition: all 0.4s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b4925a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1em;
+            border-radius: 20px;
         }
 
-        /* ================= 首頁樣式 (Home View) ================= */
+        .lang-switcher select:hover, .lang-switcher select:focus {
+            color: var(--accent-gold);
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(180, 146, 90, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            outline: none;
+        }
+
+        /* ================= 首頁標題與海報 (新增懸停與播放交互) ================= */
         .hero-banner {
             width: 100%;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 12px;
+            margin-top: 3rem;
+            margin-bottom: 4rem;
+            border-radius: 4px; 
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .hero-banner img {
             width: 100%;
             display: block;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        /* 海報中心的隱藏播放按鈕 */
+        .hero-banner::after {
+            content: '▶';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            padding-left: 5px; /* 微調三角形居中 */
+            opacity: 0;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* 海報懸停效果：整體浮起、圖片微縮放、播放按鈕浮現 */
+        .hero-banner:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(58, 90, 120, 0.15);
+        }
+
+        .hero-banner:hover img {
+            transform: scale(1.02);
+            filter: brightness(0.9); /* 稍微變暗以凸顯播放按鈕 */
+        }
+
+        .hero-banner:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .header-section {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 5rem;
+            position: relative;
         }
 
         .main-title {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            letter-spacing: 2px;
-            font-family: var(--font-serif);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
         }
 
         .sub-title {
-            font-size: 1.1rem;
-            color: var(--text-light);
+            font-size: 1.2rem;
+            color: var(--accent-gold);
             letter-spacing: 3px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
         }
 
         .location-text {
-            color: var(--text-light);
-            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
+        .header-section::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background-color: var(--accent-gold);
+            margin: 2.5rem auto 0;
+            opacity: 0.6;
+        }
+
+        /* ================= 首頁日程卡片區 ================= */
         .days-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
-            padding: 1rem 0;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: 4rem;
         }
 
         .day-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            padding: 2.5rem 1.5rem;
+            background: var(--card-bg);
+            border: none;
+            border-radius: 8px;
+            padding: 3rem 2rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
         }
 
         .day-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold-accent);
-            box-shadow: 0 8px 25px rgba(192, 161, 107, 0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(58, 90, 120, 0.08);
+        }
+
+        .day-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .day-card:hover::after {
+            transform: scaleX(1);
         }
 
         .day-date {
-            font-size: 1.5rem;
-            color: var(--primary-color);
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--primary-blue);
             margin-bottom: 0.5rem;
-            font-family: var(--font-serif);
+            line-height: 1;
+        }
+
+        .day-date span.slash {
+            color: var(--accent-gold);
+            opacity: 0.5;
+            font-weight: 100;
+            margin: 0 5px;
         }
 
         .day-desc {
-            font-size: 0.95rem;
-            color: var(--text-light);
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            letter-spacing: 1px;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .day-week {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* ================= 子頁面樣式 (Detail View) ================= */
+        /* ================= 子頁面樣式 ================= */
         .detail-header {
             display: flex;
+            justify-content: space-between; 
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(192, 161, 107, 0.3);
-            margin-top: 3rem; 
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            margin-top: 1rem; 
         }
 
         .back-btn {
-            background: none;
-            border: 1px solid var(--gold-accent);
-            color: var(--gold-accent);
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            padding: 0.5rem 0;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: var(--font-serif);
-            margin-right: 2rem;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn::before {
+            content: '←';
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            transition: transform 0.3s ease;
         }
 
         .back-btn:hover {
-            background: var(--gold-accent);
-            color: #fff;
+            color: var(--primary-blue);
+        }
+        
+        .back-btn:hover::before {
+            transform: translateX(-5px);
         }
 
         .detail-title {
-            font-size: 1.6rem;
-            color: var(--primary-color);
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            font-weight: 300;
+            letter-spacing: 2px;
         }
 
         .content-layout {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             align-items: flex-start;
         }
 
         .video-section {
-            flex: 0 0 320px;
+            flex: 0 0 340px;
             position: sticky;
-            top: 2rem;
+            top: 3rem;
         }
 
         .video-container {
             width: 100%;
             aspect-ratio: 9 / 16;
             background-color: #000;
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
         .gallery-section { flex: 1; }
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
         }
 
         .gallery-item {
             aspect-ratio: 4 / 3;
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
-            background-color: #eaeaea;
+            background-color: #f0f0f0;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.7s ease;
+            filter: grayscale(20%); 
         }
 
-        .gallery-item:hover img { transform: scale(1.08); }
-
-        /* 當圖片未加載出來時的佔位樣式 (可選) */
-        .img-placeholder {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            background-color: #f5f7fa;
-            color: #a0aec0;
-            font-size: 0.9rem;
+        .gallery-item:hover { 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            z-index: 10;
         }
 
-        /* ================= 圖片放大預覽 (Lightbox) 樣式 ================= */
+        .gallery-item:hover img { 
+            transform: scale(1.05); 
+            filter: grayscale(0%);
+        }
+
+        /* ================= 圖片/影片彈窗 (Lightbox/Modal) ================= */
         .lightbox {
             display: none;
             position: fixed;
@@ -242,7 +372,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(255, 255, 255, 0.98); 
             justify-content: center;
             align-items: center;
             animation: fadeIn 0.3s ease-in-out;
@@ -252,61 +382,79 @@
 
         .lightbox-close {
             position: absolute;
-            top: 20px;
-            right: 40px;
-            color: #fff;
+            top: 25px;
+            right: 35px;
+            color: var(--text-dark);
             font-size: 40px;
-            font-weight: bold;
+            font-weight: 300;
             cursor: pointer;
             transition: color 0.3s;
+            z-index: 10000;
         }
 
+        .lightbox-close:hover { color: var(--accent-gold); }
+
+        /* 相冊專用控件 */
         .lightbox-prev, .lightbox-next {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: #fff;
+            color: var(--text-dark);
             font-size: 50px;
+            font-weight: 100;
             cursor: pointer;
-            padding: 20px;
+            padding: 30px;
             user-select: none;
             transition: color 0.3s;
+            opacity: 0.5;
         }
 
-        .lightbox-prev { left: 20px; }
-        .lightbox-next { right: 20px; }
-
-        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
-            color: var(--gold-accent);
-        }
+        .lightbox-prev:hover, .lightbox-next:hover { opacity: 1; color: var(--accent-gold); }
+        .lightbox-prev { left: 10px; }
+        .lightbox-next { right: 10px; }
 
         .lightbox-content {
-            max-width: 90%;
-            max-height: 85vh;
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 85%;
+            max-height: 80vh;
+            border-radius: 2px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
             object-fit: contain;
         }
 
         .lightbox-caption {
             position: absolute;
             bottom: 30px;
-            color: #fff;
-            font-size: 1.2rem;
+            color: var(--text-gray);
+            font-size: 1rem;
             letter-spacing: 2px;
-            font-family: var(--font-serif);
+            font-family: var(--font-main);
         }
 
+        /* 宣傳影片專屬容器 */
+        .promo-video-wrapper {
+            width: 80%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9; /* 橫屏影片比例 */
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* ================= 響應式適配 ================= */
         @media (max-width: 800px) {
+            .page-view { padding: 2rem 5%; }
+            .hero-banner { margin-top: 4rem; }
+            .main-title { font-size: 2rem; }
             .content-layout { flex-direction: column; }
-            .video-section {
-                flex: none; width: 100%; max-width: 400px;
-                margin: 0 auto 2rem auto; position: relative; top: 0;
-            }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-            .detail-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .lightbox-prev, .lightbox-next { font-size: 30px; padding: 10px; }
-            .lightbox-close { top: 10px; right: 20px; font-size: 30px; }
+            .video-section { flex: none; width: 100%; max-width: 400px; margin: 0 auto 2rem auto; position: relative; top: 0;}
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .detail-header { flex-direction: row; align-items: center; }
+            .back-btn span { display: none; } 
+            .days-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .day-card { padding: 2.5rem 1.5rem; }
+            .day-date { font-size: 3.5rem; }
+            .promo-video-wrapper { width: 95%; }
         }
     </style>
 </head>
@@ -321,55 +469,68 @@
     </div>
 
     <div id="home-view" class="page-view">
-        <div class="hero-banner">
+        <div class="hero-banner" onclick="openPromoVideo()">
             <img src="https://i.imgur.com/KaHkGU4.jpg" alt="百年淨空 活動海報">
         </div>
+        
         <div class="header-section">
             <h1 class="main-title" data-i18n="mainTitle">百年淨空</h1>
-            <p class="sub-title serif-text" data-i18n="subTitle">地球母親 天下母親 世界和平大會</p>
+            <p class="sub-title" data-i18n="subTitle">地球母親 天下母親 世界和平大會</p>
             <p class="location-text" data-i18n="location">法國巴黎 · 聯合國教科文組織總部1號大廳</p>
         </div>
         
         <div class="days-grid">
             <div class="day-card" onclick="openDetail('03/07', 1)">
-                <h3 class="day-date">03/07</h3>
-                <p class="day-desc" data-i18n="d1Desc">星期六 · 準備和灑淨儀式</p>
+                <div class="card-content">
+                    <h3 class="day-date">03<span class="slash">/</span>07</h3>
+                    <span class="day-week" data-i18n="d1Week">星期六</span>
+                    <p class="day-desc" data-i18n="d1Desc">準備和灑淨儀式</p>
+                </div>
             </div>
+            
             <div class="day-card" onclick="openDetail('03/08', 2)">
-                <h3 class="day-date">03/08</h3>
-                <p class="day-desc" data-i18n="d2Desc">星期日 · 三時繫念法會</p>
+                <div class="card-content">
+                    <h3 class="day-date">03<span class="slash">/</span>08</h3>
+                    <span class="day-week" data-i18n="d2Week">星期日</span>
+                    <p class="day-desc" data-i18n="d2Desc">三時繫念法會</p>
+                </div>
             </div>
+            
             <div class="day-card" onclick="openDetail('03/09', 3)">
-                <h3 class="day-date">03/09</h3>
-                <p class="day-desc" data-i18n="d3Desc">星期一 · 國際和平大會</p>
+                <div class="card-content">
+                    <h3 class="day-date">03<span class="slash">/</span>09</h3>
+                    <span class="day-week" data-i18n="d3Week">星期一</span>
+                    <p class="day-desc" data-i18n="d3Desc">國際和平大會</p>
+                </div>
             </div>
+            
             <div class="day-card" onclick="openDetail('03/10', 4)">
-                <h3 class="day-date">03/10</h3>
-                <p class="day-desc" data-i18n="d4Desc">星期二 · 國際和平大會</p>
+                <div class="card-content">
+                    <h3 class="day-date">03<span class="slash">/</span>10</h3>
+                    <span class="day-week" data-i18n="d4Week">星期二</span>
+                    <p class="day-desc" data-i18n="d4Desc">國際和平大會</p>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="detail-view" class="page-view hidden">
         <div class="detail-header">
-            <button class="back-btn" onclick="goHome()" data-i18n="backBtn">← 返回日程</button>
-            <h2 class="detail-title serif-text" id="detail-title">03/07 精彩回顧</h2>
+            <button class="back-btn" onclick="goHome()">
+                <span data-i18n="backBtn">返回日程</span>
+            </button>
+            <h2 class="detail-title" id="detail-title">03/07 精彩回顧</h2>
         </div>
 
         <div class="content-layout">
             <div class="video-section">
                 <div class="video-container">
-                    <video id="daily-video" src="" 
-                           style="width: 100%; height: 100%; object-fit: cover;" 
-                           controls playsinline loop preload="metadata">
-                        您的瀏覽器不支援 HTML5 影片播放。
-                    </video>
+                    <video id="daily-video" src="" style="width: 100%; height: 100%; object-fit: cover;" controls playsinline loop preload="metadata"></video>
                 </div>
             </div>
 
             <div class="gallery-section">
-                <div class="gallery-grid" id="gallery-grid">
-                    </div>
+                <div class="gallery-grid" id="gallery-grid"></div>
             </div>
         </div>
     </div>
@@ -382,66 +543,64 @@
         <div class="lightbox-caption" id="lightbox-caption">1 / 20</div>
     </div>
 
+    <div id="promo-modal" class="lightbox">
+        <span class="lightbox-close" onclick="closePromoVideo()">&times;</span>
+        <div class="promo-video-wrapper">
+            <iframe id="promo-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script>
-        // --- 1. 多語言詞典配置 ---
+        // ==========================================
+        // 1. 配置 3 個語言版本的 YouTube 宣傳片連結
+        // 這裡目前使用佔位符影片，日後請替換為您真實的 YouTube embed 連結
+        // ==========================================
+        const promoVideos = {
+            zh: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // 中文版影片
+            en: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // 英文版影片
+            fr: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  // 法文版影片
+        };
+
+        // --- 2. 多語言詞典配置 ---
         const translations = {
             zh: {
-                mainTitle: "百年淨空",
-                subTitle: "地球母親 天下母親 世界和平大會",
-                location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
-                d1Desc: "星期六 · 準備和灑淨儀式",
-                d2Desc: "星期日 · 三時繫念法會",
-                d3Desc: "星期一 · 國際和平大會",
-                d4Desc: "星期二 · 國際和平大會",
-                backBtn: "← 返回日程",
-                highlightSuffix: " 精彩回顧"
+                mainTitle: "百年淨空", subTitle: "地球母親 天下母親 世界和平大會", location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
+                d1Week: "星期六", d1Desc: "準備和灑淨儀式", d2Week: "星期日", d2Desc: "三時繫念法會",
+                d3Week: "星期一", d3Desc: "國際和平大會", d4Week: "星期二", d4Desc: "國際和平大會",
+                backBtn: "返回日程", highlightSuffix: " 精彩回顧"
             },
             en: {
-                mainTitle: "Centenary of Master Chin Kung",
-                subTitle: "Mother Earth Mother of All International Peace Conference",
-                location: "Hall 1, UNESCO Headquarters, Paris, France",
-                d1Desc: "Sat · Preparation & Purifying Ritual",
-                d2Desc: "Sun · Thrice Yearning Chanting Service",
-                d3Desc: "Mon · Int'l Peace Conference",
-                d4Desc: "Tue · Int'l Peace Conference",
-                backBtn: "← Back",
-                highlightSuffix: " Highlights"
+                mainTitle: "Centenary of Master Chin Kung", subTitle: "Mother Earth Mother of All International Peace Conference", location: "Hall 1, UNESCO Headquarters, Paris, France",
+                d1Week: "SATURDAY", d1Desc: "Preparation & Purifying Ritual", d2Week: "SUNDAY", d2Desc: "Thrice Yearning Chanting Service",
+                d3Week: "MONDAY", d3Desc: "Int'l Peace Conference", d4Week: "TUESDAY", d4Desc: "Int'l Peace Conference",
+                backBtn: "Back", highlightSuffix: " Highlights"
             },
             fr: {
-                mainTitle: "Centenaire du Maître Chin Kung",
-                subTitle: "Conférence Internationale pour la Paix",
-                location: "Salle 1, Siège de l'UNESCO, Paris, France",
-                d1Desc: "Sam · Préparation & Rituel de Purification",
-                d2Desc: "Dim · Cérémonie de Chant",
-                d3Desc: "Lun · Conférence Int. pour la Paix",
-                d4Desc: "Mar · Conférence Int. pour la Paix",
-                backBtn: "← Retour",
-                highlightSuffix: " Temps Forts"
+                mainTitle: "Centenaire du Maître Chin Kung", subTitle: "Conférence Internationale pour la Paix", location: "Salle 1, Siège de l'UNESCO, Paris, France",
+                d1Week: "SAMEDI", d1Desc: "Préparation & Rituel de Purification", d2Week: "DIMANCHE", d2Desc: "Cérémonie de Chant",
+                d3Week: "LUNDI", d3Desc: "Conférence Int. pour la Paix", d4Week: "MARDI", d4Desc: "Conférence Int. pour la Paix",
+                backBtn: "Retour", highlightSuffix: " Temps Forts"
             }
         };
 
         let currentLang = 'zh';
         let currentDateId = '';
-        let currentDayIndex = 1; // 記錄當前是第幾天 (1-4)
+        let currentDayIndex = 1; 
         let currentImageIndex = 0;   
-        let currentImagesArray = []; // 動態存儲當前頁面的 20 張圖片路徑
+        let currentImagesArray = []; 
 
-        // --- 2. 語言切換邏輯 ---
         function switchLanguage(lang) {
             currentLang = lang;
             const dict = translations[lang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (dict[key]) {
-                    el.innerHTML = dict[key]; 
-                }
+                if (dict[key]) el.innerHTML = dict[key]; 
             });
             if (!document.getElementById('detail-view').classList.contains('hidden') && currentDateId) {
                 updateDetailTitle();
             }
         }
 
-        // --- 3. 頁面導航與動態路徑生成 ---
         const homeView = document.getElementById('home-view');
         const detailView = document.getElementById('detail-view');
         const detailTitle = document.getElementById('detail-title');
@@ -457,28 +616,19 @@
             currentDayIndex = dayIndex;
             updateDetailTitle();
             
-            // 1. 動態加載影片
             videoElement.src = `video/day-${dayIndex}/video.mp4`;
-            videoElement.load(); // 強制重新加載新路徑的影片
+            videoElement.load(); 
 
-            // 2. 動態生成 20 張圖片網格
             galleryGrid.innerHTML = ''; 
-            currentImagesArray = []; // 清空之前的陣列
+            currentImagesArray = []; 
             
             for (let i = 1; i <= 20; i++) {
-                // 生成圖片的本地相對路徑
                 const imgPath = `photo/day-${dayIndex}/${i}.jpg`;
                 currentImagesArray.push(imgPath);
                 
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
-                
-                // 加入了 onerror 處理：如果某一天圖片還沒傳滿 20 張，會顯示一個灰色佔位框而不是破圖圖標
-                item.innerHTML = `
-                    <img src="${imgPath}" alt="Photo ${i}" loading="lazy" 
-                         onclick="openLightbox(${i - 1})" 
-                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>照片上傳中...</div>';">
-                `;
+                item.innerHTML = `<img src="${imgPath}" alt="Photo ${i}" loading="lazy" onclick="openLightbox(${i - 1})" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>照片上傳中...</div>';">`;
                 galleryGrid.appendChild(item);
             }
 
@@ -491,23 +641,37 @@
             detailView.classList.add('hidden');
             homeView.classList.remove('hidden');
             currentDateId = '';
-            
-            // 停止影片播放
             if (videoElement && !videoElement.paused) {
                 videoElement.pause();
                 videoElement.currentTime = 0; 
             }
         }
 
-        // --- 4. Lightbox 圖片預覽邏輯 ---
+        // --- 宣傳影片彈窗邏輯 ---
+        const promoModal = document.getElementById('promo-modal');
+        const promoIframe = document.getElementById('promo-iframe');
+
+        function openPromoVideo() {
+            // 根據當前選擇的語言載入對應的 YouTube 連結
+            promoIframe.src = promoVideos[currentLang];
+            promoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closePromoVideo() {
+            promoModal.classList.remove('active');
+            document.body.style.overflow = 'auto'; 
+            // 清空 src 停止播放聲音
+            promoIframe.src = ""; 
+        }
+
+        // --- 圖片預覽邏輯 ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
 
         function openLightbox(index) {
-            // 如果點擊的是佔位符(沒有加載出圖片)，就不打開大圖
             if(!currentImagesArray[index]) return; 
-
             currentImageIndex = index;
             updateLightboxView();
             lightbox.classList.add('active');
@@ -521,34 +685,28 @@
 
         function changeImage(step) {
             currentImageIndex += step;
-            if (currentImageIndex < 0) {
-                currentImageIndex = currentImagesArray.length - 1;
-            } else if (currentImageIndex >= currentImagesArray.length) {
-                currentImageIndex = 0;
-            }
+            if (currentImageIndex < 0) currentImageIndex = currentImagesArray.length - 1;
+            else if (currentImageIndex >= currentImagesArray.length) currentImageIndex = 0;
             updateLightboxView();
         }
 
         function updateLightboxView() {
             lightboxImg.src = currentImagesArray[currentImageIndex];
             lightboxCaption.innerText = `${currentImageIndex + 1} / ${currentImagesArray.length}`;
-            
-            // 處理大圖也可能不存在的情況
             lightboxImg.onerror = function() {
                 this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='100%' height='100%' fill='%23eee'/><text x='50%' y='50%' font-family='Arial' font-size='24' fill='%23999' text-anchor='middle' dy='.3em'>照片上傳中...</text></svg>";
             };
         }
 
-        // --- 5. 鍵盤快捷鍵支持 ---
+        // 監聽 ESC 鍵關閉任何彈窗
         document.addEventListener('keydown', function(event) {
-            if (lightbox.classList.contains('active')) {
-                if (event.key === 'Escape') {
-                    closeLightbox();
-                } else if (event.key === 'ArrowLeft') {
-                    changeImage(-1);
-                } else if (event.key === 'ArrowRight') {
-                    changeImage(1);
-                }
+            if (event.key === 'Escape') {
+                if (lightbox.classList.contains('active')) closeLightbox();
+                if (promoModal.classList.contains('active')) closePromoVideo();
+            } else if (event.key === 'ArrowLeft' && lightbox.classList.contains('active')) {
+                changeImage(-1);
+            } else if (event.key === 'ArrowRight' && lightbox.classList.contains('active')) {
+                changeImage(1);
             }
         });
     </script>

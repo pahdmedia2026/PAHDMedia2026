@@ -126,7 +126,6 @@
             backdrop-filter: blur(4px);
         }
 
-        /* 海報懸停效果：整體浮起、圖片微縮放、播放按鈕浮現 */
         .hero-banner:hover {
             transform: translateY(-8px);
             box-shadow: 0 25px 50px rgba(58, 90, 120, 0.15);
@@ -134,7 +133,7 @@
 
         .hero-banner:hover img {
             transform: scale(1.02);
-            filter: brightness(0.9); /* 稍微變暗以凸顯播放按鈕 */
+            filter: brightness(0.9);
         }
 
         .hero-banner:hover::after {
@@ -326,7 +325,10 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
-        .gallery-section { flex: 1; }
+        .gallery-section { 
+            flex: 1; 
+            width: 100%; /* 防止移動端被壓縮 */
+        }
 
         .gallery-grid {
             display: grid;
@@ -394,7 +396,6 @@
 
         .lightbox-close:hover { color: var(--accent-gold); }
 
-        /* 相冊專用控件 */
         .lightbox-prev, .lightbox-next {
             position: absolute;
             top: 50%;
@@ -430,25 +431,31 @@
             font-family: var(--font-main);
         }
 
-        /* 宣傳影片專屬容器 */
         .promo-video-wrapper {
             width: 80%;
             max-width: 1000px;
-            aspect-ratio: 16 / 9; /* 橫屏影片比例 */
+            aspect-ratio: 16 / 9;
             background: #000;
             border-radius: 8px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
 
-        /* ================= 響應式適配 ================= */
+        /* ================= 響應式適配 (修復手機端Bug) ================= */
         @media (max-width: 800px) {
             .page-view { padding: 2rem 5%; }
             .hero-banner { margin-top: 4rem; }
             .main-title { font-size: 2rem; }
-            .content-layout { flex-direction: column; }
+            
+            /* 關鍵修復1：強制容器內的元素寬度為100% (stretch) */
+            .content-layout { flex-direction: column; align-items: stretch; }
+            
             .video-section { flex: none; width: 100%; max-width: 400px; margin: 0 auto 2rem auto; position: relative; top: 0;}
+            
+            /* 關鍵修復2：保證圖片區域寬度撐滿 */
+            .gallery-section { width: 100%; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            
             .detail-header { flex-direction: row; align-items: center; }
             .back-btn span { display: none; } 
             .days-grid { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -552,16 +559,14 @@
 
     <script>
         // ==========================================
-        // 1. 配置 3 個語言版本的 YouTube 宣傳片連結
-        // 這裡目前使用佔位符影片，日後請替換為您真實的 YouTube embed 連結
+        // 配置 3 個語言版本的 YouTube 宣傳片連結
         // ==========================================
         const promoVideos = {
-            zh: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // 中文版影片
-            en: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", // 英文版影片
-            fr: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  // 法文版影片
+            zh: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", 
+            en: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", 
+            fr: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  
         };
 
-        // --- 2. 多語言詞典配置 ---
         const translations = {
             zh: {
                 mainTitle: "百年淨空", subTitle: "地球母親 天下母親 世界和平大會", location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
@@ -652,7 +657,6 @@
         const promoIframe = document.getElementById('promo-iframe');
 
         function openPromoVideo() {
-            // 根據當前選擇的語言載入對應的 YouTube 連結
             promoIframe.src = promoVideos[currentLang];
             promoModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
@@ -661,7 +665,6 @@
         function closePromoVideo() {
             promoModal.classList.remove('active');
             document.body.style.overflow = 'auto'; 
-            // 清空 src 停止播放聲音
             promoIframe.src = ""; 
         }
 
@@ -698,7 +701,6 @@
             };
         }
 
-        // 監聽 ESC 鍵關閉任何彈窗
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 if (lightbox.classList.contains('active')) closeLightbox();

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* ================= 基础重置与全局样式 ================= */
         :root {
             --primary-blue: #3a5a78; 
             --accent-gold: #b4925a;  
@@ -35,6 +36,7 @@
 
         .hidden { display: none !important; }
 
+        /* ================= 淡雅渐隐全屏背景图 ================= */
         .site-background {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -61,6 +63,7 @@
             z-index: 1;
         }
 
+        /* ================= 多语言海报容器 ================= */
         .hero-banner {
             width: 100%;
             margin: 2rem auto 4rem auto; 
@@ -111,50 +114,120 @@
             z-index: 5; 
         }
 
-        .hero-banner:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(192, 161, 107, 0.15); }
-        .hero-banner:hover::before { transform: scale(1.02); filter: brightness(0.9); }
-        .hero-banner:hover::after { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .hero-banner:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(192, 161, 107, 0.15); 
+        }
+
+        .hero-banner:hover::before {
+            transform: scale(1.02);
+            filter: brightness(0.9); 
+        }
+
+        .hero-banner:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
         .lang-fr .hero-banner::before { background-image: url("./photo/header/fr.jpg"); }
 
-        .lang-switcher { position: absolute; top: 2rem; right: 5%; z-index: 100; }
-        .lang-switcher select {
-            appearance: none; -webkit-appearance: none; -moz-appearance: none;
-            background-color: transparent; border: 1px solid transparent;
-            color: var(--text-gray); font-family: var(--font-main); font-size: 0.95rem;
-            padding: 0.5rem 2.2rem 0.5rem 1rem; cursor: pointer; transition: all 0.4s ease;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b4925a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 1em;
-            border-radius: 20px;
-        }
-        .lang-switcher select:hover, .lang-switcher select:focus {
-            color: var(--accent-gold); background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(180, 146, 90, 0.3); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); outline: none;
+        /* ================= 语言切换器 ================= */
+        .lang-switcher {
+            position: absolute;
+            top: 2rem;
+            right: 5%;
+            z-index: 100;
         }
 
+        .lang-switcher select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            color: var(--text-gray);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            padding: 0.5rem 2.2rem 0.5rem 1rem; 
+            cursor: pointer;
+            transition: all 0.4s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b4925a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1em;
+            border-radius: 20px;
+        }
+
+        .lang-switcher select:hover, .lang-switcher select:focus {
+            color: var(--accent-gold);
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(180, 146, 90, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            outline: none;
+        }
+
+        /* ================= 文本与页面细节 ================= */
         .header-section { text-align: center; margin-bottom: 5rem; position: relative; }
         .main-title { font-size: 3rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: 4px; }
         .sub-title { font-size: 1.2rem; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 1.5rem; font-weight: 400; line-height: 1.8; }
         .location-text { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
         .header-section::after { content: ''; display: block; width: 60px; height: 2px; background-color: var(--accent-gold); margin: 2.5rem auto 0; opacity: 0.6; }
         
-        .days-list { display: flex; flex-direction: column; gap: 1.5rem; max-width: 1000px; margin: 0 auto; padding-bottom: 4rem; }
-        .day-card-horizontal { 
-            display: flex; flex-direction: row; align-items: center; background: var(--card-bg); 
-            border: none; border-radius: 8px; padding: 2.5rem 3rem; cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
-            position: relative; overflow: hidden; 
+        /* ================= 横向列表排版 ================= */
+        .days-list { 
+            display: flex; 
+            flex-direction: column;
+            gap: 1.5rem; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-bottom: 4rem; 
         }
+        
+        .day-card-horizontal { 
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: var(--card-bg); 
+            border: none; 
+            border-radius: 8px; 
+            padding: 2.5rem 3rem; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            position: relative; 
+            overflow: hidden; 
+        }
+
         .day-card-horizontal:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(58, 90, 120, 0.08); }
         .day-card-horizontal::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent-gold); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
         .day-card-horizontal:hover::after { transform: scaleX(1); }
         
-        .day-date-group { flex: 0 0 220px; text-align: center; padding-right: 2.5rem; border-right: 1px solid rgba(192, 161, 107, 0.3); }
-        .day-info-group { flex: 1; text-align: left; padding-left: 2.5rem; }
+        .day-date-group {
+            flex: 0 0 220px; 
+            text-align: center;
+            padding-right: 2.5rem;
+            border-right: 1px solid rgba(192, 161, 107, 0.3);
+        }
+
+        .day-info-group {
+            flex: 1;
+            text-align: left;
+            padding-left: 2.5rem;
+        }
+
         .day-date { font-size: 4rem; font-weight: 300; color: var(--primary-blue); margin-bottom: 0.2rem; line-height: 1; white-space: nowrap; }
         .day-date span.slash { color: var(--accent-gold); opacity: 0.5; font-weight: 100; margin: 0 5px; }
         .day-week { display: block; font-size: 0.95rem; color: var(--text-gray); margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        .day-desc { font-size: 1.25rem; color: var(--text-dark); letter-spacing: 1px; font-weight: 500; line-height: 1.6; }
+        
+        .day-desc { 
+            font-size: 1.25rem; 
+            color: var(--text-dark); 
+            letter-spacing: 1px; 
+            font-weight: 500; 
+            line-height: 1.6;
+        }
         
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 1rem; }
         .back-btn { background: transparent; border: none; color: var(--text-gray); padding: 0.5rem 0; cursor: pointer; transition: all 0.3s ease; font-family: var(--font-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
@@ -173,6 +246,7 @@
         .gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
         .img-placeholder { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: #f0f0f0; color: #999; font-size: 0.9rem; }
         
+        /* 弹窗样式 */
         .lightbox { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); justify-content: center; align-items: center; animation: fadeIn 0.3s ease-in-out; }
         .lightbox.active { display: flex; }
         .lightbox-close { position: absolute; top: 25px; right: 35px; color: var(--text-dark); font-size: 40px; font-weight: 300; cursor: pointer; transition: color 0.3s; z-index: 10000; }
@@ -186,26 +260,75 @@
         .promo-video-wrapper { width: 80%; max-width: 1000px; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); overflow: hidden; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* === 移动端专属的播放按钮“呼吸”动画 === */
+        @keyframes mobilePulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 0 rgba(192, 161, 107, 0.4); }
+            50% { transform: translate(-50%, -50%) scale(0.85); background: rgba(255, 255, 255, 0.95); box-shadow: 0 0 0 15px rgba(192, 161, 107, 0); }
+            100% { transform: translate(-50%, -50%) scale(0.8); background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 0 rgba(192, 161, 107, 0); }
+        }
+
+        /* ================= 移动端适配限位核心修复区 ================= */
         @media (max-width: 800px) {
             .site-background { background-image: url("./photo/background/mobile.jpg"); }
             .page-view { padding: 1.5rem 5%; }
             .hero-banner { margin-top: 3.5rem; margin-bottom: 2rem; width: 100%; } 
             .hero-banner::before { padding-top: 50%; } 
+            
+            /* 移动端海报强制显示播放按钮并附加脉冲动画 */
+            .hero-banner::after {
+                opacity: 0.9;
+                animation: mobilePulse 2.5s infinite;
+            }
+            
             .header-section { margin-bottom: 3rem; }
             .main-title { font-size: 2.2rem; }
             .sub-title { font-size: 0.95rem; }
             
-            .day-card-horizontal { flex-direction: column; padding: 2rem 1.5rem; }
-            .day-date-group { flex: auto; width: 100%; text-align: center; padding-right: 0; border-right: none; border-bottom: 1px solid rgba(192, 161, 107, 0.3); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-            .day-info-group { padding-left: 0; text-align: center; }
+            .day-card-horizontal { 
+                flex-direction: column; 
+                padding: 2rem 1.5rem; 
+            }
+            
+            .day-date-group {
+                flex: auto;
+                width: 100%;
+                text-align: center;
+                padding-right: 0;
+                border-right: none;
+                border-bottom: 1px solid rgba(192, 161, 107, 0.3);
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .day-info-group {
+                padding-left: 0;
+                text-align: center;
+            }
+
             .day-date { font-size: clamp(2.5rem, 8vw, 3.5rem); margin-bottom: 0.2rem; }
             .day-week { font-size: 0.85rem; margin-top: 0.2rem; }
-            .day-desc { font-size: 1rem; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; }
+
+            .day-desc { 
+                font-size: 1rem; 
+                word-wrap: break-word;        
+                overflow-wrap: break-word;    
+                hyphens: auto;                
+            }
             
-            .detail-header { margin-top: 4.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .detail-title { font-size: 1.4rem; line-height: 1.4; }
+            .detail-header { 
+                margin-top: 4.5rem; 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 1rem;
+            }
+            .detail-title {
+                font-size: 1.4rem; 
+                line-height: 1.4;
+            }
+
             .back-btn span { display: none; } 
             .promo-video-wrapper { width: 95%; }
+            
             .content-layout { flex-direction: column; align-items: stretch; }
             .video-section { flex: none; width: 100%; max-width: 100%; margin: 0 auto 2rem auto; position: relative; top: 0;}
             .gallery-section { width: 100%; }
@@ -214,7 +337,9 @@
     </style>
 </head>
 <body class="lang-zh">
+
     <div class="site-background"></div>
+
     <div class="lang-switcher">
         <select id="lang-select" onchange="switchLanguage(this.value)">
             <option value="zh">繁體中文</option>
@@ -225,6 +350,7 @@
 
     <div id="home-view" class="page-view">
         <div class="hero-banner" id="lang-poster" onclick="openPromoVideo()"></div>
+        
         <div class="header-section">
             <h1 class="main-title serif-text" data-i18n="mainTitle">百年淨空</h1>
             <p class="sub-title serif-text" data-i18n="subTitle">地球母親 天下母親 世界和平大會</p>
@@ -247,15 +373,19 @@
 
     <div id="detail-view" class="page-view hidden">
         <div class="detail-header">
-            <button class="back-btn" onclick="goHome()"><span data-i18n="backBtn">返回日程</span></button>
+            <button class="back-btn" onclick="goHome()">
+                <span data-i18n="backBtn">返回日程</span>
+            </button>
             <h2 class="detail-title serif-text" id="detail-title">03/08 精彩回顧</h2>
         </div>
+
         <div class="content-layout">
             <div class="video-section">
                 <div class="video-container">
                     <video id="daily-video" src="" style="width: 100%; height: 100%; object-fit: cover;" controls playsinline loop preload="metadata"></video>
                 </div>
             </div>
+
             <div class="gallery-section">
                 <div class="gallery-grid" id="gallery-grid"></div>
             </div>
@@ -323,12 +453,15 @@
         function switchLanguage(lang) {
             currentLang = lang;
             const dict = translations[lang];
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) el.innerHTML = dict[key]; 
             });
+
             document.body.classList.remove('lang-zh', 'lang-en', 'lang-fr');
             document.body.classList.add(`lang-${lang}`);
+
             if (!document.getElementById('detail-view').classList.contains('hidden') && currentDateId) {
                 updateDetailTitle();
             }
@@ -348,18 +481,23 @@
             currentDateId = dateId;
             currentDayIndex = dayIndex;
             updateDetailTitle();
+            
             videoElement.src = `./video/day-${dayIndex}/video.mp4`;
             videoElement.load(); 
+
             galleryGrid.innerHTML = ''; 
             currentImagesArray = []; 
+            
             for (let i = 1; i <= 20; i++) {
                 const imgPath = `./photo/day-${dayIndex}/${i}.jpg`;
                 currentImagesArray.push(imgPath);
+                
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
                 item.innerHTML = `<img src="${imgPath}" alt="Photo ${i}" loading="lazy" onclick="openLightbox(${i - 1})" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>照片上傳中...</div>';">`;
                 galleryGrid.appendChild(item);
             }
+
             homeView.classList.add('hidden');
             detailView.classList.remove('hidden');
             window.scrollTo(0, 0);
@@ -383,6 +521,7 @@
             promoModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
         }
+
         function closePromoVideo() {
             promoModal.classList.remove('active');
             document.body.style.overflow = 'auto'; 
@@ -400,16 +539,19 @@
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden'; 
         }
+
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto'; 
         }
+
         function changeImage(step) {
             currentImageIndex += step;
             if (currentImageIndex < 0) currentImageIndex = currentImagesArray.length - 1;
             else if (currentImageIndex >= currentImagesArray.length) currentImageIndex = 0;
             updateLightboxView();
         }
+
         function updateLightboxView() {
             lightboxImg.src = currentImagesArray[currentImageIndex];
             lightboxCaption.innerText = `${currentImageIndex + 1} / ${currentImagesArray.length}`;

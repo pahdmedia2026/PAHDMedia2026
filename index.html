@@ -36,7 +36,7 @@
 
         .hidden { display: none !important; }
 
-        /* ================= 淡雅全屏背景图 (提升了可见度) ================= */
+        /* ================= 淡雅渐隐全屏背景图 ================= */
         .site-background {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -44,8 +44,8 @@
             background-image: url("./photo/background/desktop.jpg");
             background-size: cover;
             background-position: center;
-            opacity: 0.28; /* 从0.15提升至0.28，更明显 */
-            filter: blur(2px); /* 从3px降至2px，保留更多细节 */
+            opacity: 0.28; 
+            filter: blur(2px); 
             background-repeat: no-repeat;
         }
 
@@ -168,23 +168,68 @@
             outline: none;
         }
 
-        /* ================= 文本与页面细节 (桌面端) ================= */
+        /* ================= 文本与页面细节 ================= */
         .header-section { text-align: center; margin-bottom: 5rem; position: relative; }
         .main-title { font-size: 3rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: 4px; }
-        .sub-title { font-size: 1.2rem; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 1.5rem; font-weight: 400; }
+        .sub-title { font-size: 1.2rem; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 1.5rem; font-weight: 400; line-height: 1.8; }
         .location-text { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
         .header-section::after { content: ''; display: block; width: 60px; height: 2px; background-color: var(--accent-gold); margin: 2.5rem auto 0; opacity: 0.6; }
         
-        .days-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; max-width: 900px; margin: 0 auto; padding-bottom: 4rem; }
-        .day-card { background: var(--card-bg); border: none; border-radius: 8px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden; }
-        .day-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(58, 90, 120, 0.08); }
-        .day-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent-gold); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
-        .day-card:hover::after { transform: scaleX(1); }
+        /* ================= 全新：横向列表排版 (3条) ================= */
+        .days-list { 
+            display: flex; 
+            flex-direction: column;
+            gap: 1.5rem; 
+            max-width: 1000px; /* 与海报同宽 */
+            margin: 0 auto; 
+            padding-bottom: 4rem; 
+        }
         
-        .day-date { font-size: 4rem; font-weight: 300; color: var(--primary-blue); margin-bottom: 0.5rem; line-height: 1; white-space: nowrap; }
+        .day-card-horizontal { 
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: var(--card-bg); 
+            border: none; 
+            border-radius: 8px; 
+            padding: 2.5rem 3rem; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        .day-card-horizontal:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(58, 90, 120, 0.08); }
+        .day-card-horizontal::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent-gold); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+        .day-card-horizontal:hover::after { transform: scaleX(1); }
+        
+        /* 左侧日期组 */
+        .day-date-group {
+            flex: 0 0 220px; /* 固定宽度保证对齐 */
+            text-align: center;
+            padding-right: 2.5rem;
+            border-right: 1px solid rgba(192, 161, 107, 0.3);
+        }
+
+        /* 右侧主题组 */
+        .day-info-group {
+            flex: 1;
+            text-align: left;
+            padding-left: 2.5rem;
+        }
+
+        .day-date { font-size: 4rem; font-weight: 300; color: var(--primary-blue); margin-bottom: 0.2rem; line-height: 1; white-space: nowrap; }
         .day-date span.slash { color: var(--accent-gold); opacity: 0.5; font-weight: 100; margin: 0 5px; }
-        .day-desc { font-size: 1.05rem; color: var(--text-dark); letter-spacing: 1px; margin-top: 1.5rem; font-weight: 500; }
-        .day-week { display: block; font-size: 0.9rem; color: var(--text-gray); margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        .day-week { display: block; font-size: 0.95rem; color: var(--text-gray); margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .day-desc { 
+            font-size: 1.25rem; /* 桌面端加大字号 */
+            color: var(--text-dark); 
+            letter-spacing: 1px; 
+            font-weight: 500; 
+            line-height: 1.6;
+        }
         
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 1rem; }
         .back-btn { background: transparent; border: none; color: var(--text-gray); padding: 0.5rem 0; cursor: pointer; transition: all 0.3s ease; font-family: var(--font-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
@@ -220,51 +265,59 @@
         /* ================= 移动端适配限位核心修复区 ================= */
         @media (max-width: 800px) {
             .site-background { background-image: url("./photo/background/mobile.jpg"); }
-            
             .page-view { padding: 1.5rem 5%; }
-            
-            .hero-banner { 
-                margin-top: 3.5rem; 
-                margin-bottom: 2rem;
-                width: 100%; 
-            } 
+            .hero-banner { margin-top: 3.5rem; margin-bottom: 2rem; width: 100%; } 
             .hero-banner::before { padding-top: 50%; } 
             
             .header-section { margin-bottom: 3rem; }
             .main-title { font-size: 2.2rem; }
             .sub-title { font-size: 0.95rem; }
             
-            .days-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 1rem; 
-                padding-bottom: 2rem; 
+            /* 1. 移动端改为上下折叠排版 */
+            .day-card-horizontal { 
+                flex-direction: column; 
+                padding: 2rem 1.5rem; 
             }
             
-            .day-card { 
-                padding: 1.5rem 0.6rem; 
-            }
-            
-            .day-date { 
-                font-size: clamp(1.4rem, 6vw, 2.2rem); 
-                margin-bottom: 0.2rem;
-            }
-            .day-date span.slash { margin: 0 2px; }
-            
-            .day-week { 
-                font-size: 0.75rem; 
-                margin-top: 0.2rem; 
+            .day-date-group {
+                flex: auto;
+                width: 100%;
+                text-align: center;
+                padding-right: 0;
+                border-right: none;
+                border-bottom: 1px solid rgba(192, 161, 107, 0.3);
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
             }
 
+            .day-info-group {
+                padding-left: 0;
+                text-align: center;
+            }
+
+            .day-date { font-size: clamp(2.5rem, 8vw, 3.5rem); margin-bottom: 0.2rem; }
+            .day-week { font-size: 0.85rem; margin-top: 0.2rem; }
+
+            /* 法语/英语超长长单词限位 */
             .day-desc { 
-                font-size: 0.85rem; 
-                margin-top: 0.8rem;
-                padding: 0 0.2rem;
+                font-size: 1rem; 
                 word-wrap: break-word;        
                 overflow-wrap: break-word;    
                 hyphens: auto;                
             }
             
-            .detail-header { flex-direction: row; align-items: center; }
+            /* 2. 修复详情页 Header 重叠 Bug */
+            .detail-header { 
+                margin-top: 4.5rem; /* 增加顶部间距，避开悬浮的语言框 */
+                flex-direction: column; /* 竖向排列返回按钮和标题 */
+                align-items: flex-start; 
+                gap: 1rem;
+            }
+            .detail-title {
+                font-size: 1.4rem; /* 缩小字号防止法文撑爆 */
+                line-height: 1.4;
+            }
+
             .back-btn span { display: none; } 
             .promo-video-wrapper { width: 95%; }
             
@@ -297,36 +350,34 @@
             <div class="header-divider"></div>
         </div>
         
-        <div class="days-grid">
-            <div class="day-card" onclick="openDetail('03/07', 1)">
-                <div class="card-content">
-                    <h3 class="day-date serif-text">03<span class="slash">/</span>07</h3>
-                    <span class="day-week" data-i18n="d1Week">星期六</span>
-                    <p class="day-desc" data-i18n="d1Desc">準備和灑淨儀式</p>
-                </div>
-            </div>
-            
-            <div class="day-card" onclick="openDetail('03/08', 2)">
-                <div class="card-content">
+        <div class="days-list">
+            <div class="day-card-horizontal" onclick="openDetail('03/08', 2)">
+                <div class="day-date-group">
                     <h3 class="day-date serif-text">03<span class="slash">/</span>08</h3>
                     <span class="day-week" data-i18n="d2Week">星期日</span>
+                </div>
+                <div class="day-info-group">
                     <p class="day-desc" data-i18n="d2Desc">三時繫念法會</p>
                 </div>
             </div>
             
-            <div class="day-card" onclick="openDetail('03/09', 3)">
-                <div class="card-content">
+            <div class="day-card-horizontal" onclick="openDetail('03/09', 3)">
+                <div class="day-date-group">
                     <h3 class="day-date serif-text">03<span class="slash">/</span>09</h3>
                     <span class="day-week" data-i18n="d3Week">星期一</span>
-                    <p class="day-desc" data-i18n="d3Desc">國際和平大會</p>
+                </div>
+                <div class="day-info-group">
+                    <p class="day-desc" data-i18n="d3Desc">世界和平大會</p>
                 </div>
             </div>
             
-            <div class="day-card" onclick="openDetail('03/10', 4)">
-                <div class="card-content">
+            <div class="day-card-horizontal" onclick="openDetail('03/10', 4)">
+                <div class="day-date-group">
                     <h3 class="day-date serif-text">03<span class="slash">/</span>10</h3>
                     <span class="day-week" data-i18n="d4Week">星期二</span>
-                    <p class="day-desc" data-i18n="d4Desc">國際和平大會</p>
+                </div>
+                <div class="day-info-group">
+                    <p class="day-desc" data-i18n="d4Desc">世界和平大會</p>
                 </div>
             </div>
         </div>
@@ -337,7 +388,7 @@
             <button class="back-btn" onclick="goHome()">
                 <span data-i18n="backBtn">返回日程</span>
             </button>
-            <h2 class="detail-title serif-text" id="detail-title">03/07 精彩回顧</h2>
+            <h2 class="detail-title serif-text" id="detail-title">03/08 精彩回顧</h2>
         </div>
 
         <div class="content-layout">
@@ -375,36 +426,50 @@
             fr: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  
         };
 
+        // ==========================================
+        // 全新：精调版多语言文案词典 (注意法语的音标与所有手动换行符 <br>)
+        // ==========================================
         const translations = {
             zh: {
-                mainTitle: "百年淨空", subTitle: "地球母親 天下母親 世界和平大會", location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
-                d1Week: "星期六", d1Desc: "準備和灑淨儀式", d2Week: "星期日", d2Desc: "三時繫念法會",
-                d3Week: "星期一", d3Desc: "國際和平大會", d4Week: "星期二", d4Desc: "國際和平大會",
+                mainTitle: "百年淨空", 
+                subTitle: "地球母親 天下母親 世界和平大會", 
+                location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
+                d2Week: "星期日", d2Desc: "三時繫念法會",
+                d3Week: "星期一", d3Desc: "世界和平大會", 
+                d4Week: "星期二", d4Desc: "世界和平大會",
                 backBtn: "返回日程", highlightSuffix: " 精彩回顧"
             },
             en: {
-                mainTitle: "Centenary of Master Chin Kung", subTitle: "Mother Earth Mother of All International Peace Conference", location: "Hall 1, UNESCO Headquarters, Paris, France",
-                d1Week: "SATURDAY", d1Desc: "Preparation & Purifying Ritual", d2Week: "SUNDAY", d2Desc: "Thrice Yearning Chanting Service",
-                d3Week: "MONDAY", d3Desc: "Int'l Peace Conference", d4Week: "TUESDAY", d4Desc: "Int'l Peace Conference",
+                mainTitle: "One Hundred Year Master Chin Kung", 
+                subTitle: "Mother Earth Mother of All<br>International Conference for World Harmony<br>The Role of Women in Promoting Peace", 
+                location: "UNESCO Room 1, 125 Avenue de Suffren, 75007 Paris, France",
+                d2Week: "SUNDAY", d2Desc: "Thrice Yearning Ceremony",
+                d3Week: "MONDAY", d3Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace", 
+                d4Week: "TUESDAY", d4Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace",
                 backBtn: "Back", highlightSuffix: " Highlights"
             },
             fr: {
-                mainTitle: "Centenaire du Maître Chin Kung", subTitle: "Conférence Internationale pour la Paix", location: "Salle 1, Siège de l'UNESCO, Paris, France",
-                d1Week: "SAMEDI", d1Desc: "Préparation & Rituel de Purification", d2Week: "DIMANCHE", d2Desc: "Cérémonie de Chant",
-                d3Week: "LUNDI", d3Desc: "Conférence Int. pour la Paix", d4Week: "MARDI", d4Desc: "Conférence Int. pour la Paix",
+                mainTitle: "Centenaire du Maître Chin Kung", 
+                subTitle: "Terre Mère, Mère du Monde<br>Conférence Internationale pour l'Harmonie Mondiale<br>Le Rôle des Femmes dans la Promotion de la Paix", 
+                location: "UNESCO Salle 1, 125 Avenue de Suffren, 75007 Paris, France",
+                d2Week: "DIMANCHE", d2Desc: "Cérémonie de l'Invocation en Trois Temps",
+                d3Week: "LUNDI", d3Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix", 
+                d4Week: "MARDI", d4Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix",
                 backBtn: "Retour", highlightSuffix: " Temps Forts"
             }
         };
 
         let currentLang = 'zh';
         let currentDateId = '';
-        let currentDayIndex = 1; 
+        let currentDayIndex = 2; 
         let currentImageIndex = 0;   
         let currentImagesArray = []; 
 
         function switchLanguage(lang) {
             currentLang = lang;
             const dict = translations[lang];
+            
+            // 使用 innerHTML 以解析字典中的 <br> 换行符
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) el.innerHTML = dict[key]; 
@@ -433,6 +498,7 @@
             currentDayIndex = dayIndex;
             updateDetailTitle();
             
+            // 继续维持原有的 day-2, day-3, day-4 文件夹路径
             videoElement.src = `./video/day-${dayIndex}/video.mp4`;
             videoElement.load(); 
 

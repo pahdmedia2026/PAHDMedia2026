@@ -63,7 +63,7 @@
             z-index: 1;
         }
 
-        /* ================= 多语言海报容器 ================= */
+        /* ================= 多语言静态海报容器 (已移除所有点击/悬停交互) ================= */
         .hero-banner {
             width: 100%;
             margin: 2rem auto 4rem auto; 
@@ -71,10 +71,10 @@
             overflow: hidden;
             box-shadow: 0 15px 40px rgba(74, 107, 140, 0.1);
             position: relative;
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             max-width: 1000px;
             display: block; 
+            /* 移除 cursor: pointer，变为默认状态 */
+            cursor: default; 
         }
 
         .hero-banner::before {
@@ -84,49 +84,8 @@
             padding-top: 50%; 
             background-size: cover;
             background-position: center;
-            transition: transform 0.5s ease;
             background-repeat: no-repeat;
             background-image: url("./photo/header/cn-en.jpg");
-        }
-
-        .hero-banner img { display: none; }
-
-        .hero-banner::after {
-            content: '▶';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.85);
-            color: var(--accent-gold);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            padding-left: 5px; 
-            opacity: 0;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px);
-            z-index: 5; 
-        }
-
-        .hero-banner:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(192, 161, 107, 0.15); 
-        }
-
-        .hero-banner:hover::before {
-            transform: scale(1.02);
-            filter: brightness(0.9); 
-        }
-
-        .hero-banner:hover::after {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
         }
 
         .lang-fr .hero-banner::before { background-image: url("./photo/header/fr.jpg"); }
@@ -173,9 +132,52 @@
         .main-title { font-size: 3rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: 4px; }
         .sub-title { font-size: 1.2rem; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 1.5rem; font-weight: 400; line-height: 1.8; }
         .location-text { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
-        .header-section::after { content: ''; display: block; width: 60px; height: 2px; background-color: var(--accent-gold); margin: 2.5rem auto 0; opacity: 0.6; }
+        .header-divider { content: ''; display: block; width: 60px; height: 2px; background-color: var(--accent-gold); margin: 3rem auto 0; opacity: 0.6; }
         
-        /* ================= 横向列表排版 ================= */
+        /* ================= 直播按钮专属样式 ================= */
+        .live-btn-container {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .live-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 2.5rem;
+            background: linear-gradient(135deg, #c0a16b, #a08250);
+            color: #ffffff;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(180, 146, 90, 0.3);
+        }
+
+        .live-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(180, 146, 90, 0.45);
+        }
+
+        /* 红点呼吸灯效果 */
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ff4757;
+            border-radius: 50%;
+            animation: livePulse 1.5s infinite;
+        }
+
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+
+        /* ================= 横向列表排版 (3天) ================= */
         .days-list { 
             display: flex; 
             flex-direction: column;
@@ -229,24 +231,27 @@
             line-height: 1.6;
         }
         
-        .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 1rem; }
+        /* ================= 子页面全新排版 (适配横屏视频) ================= */
+        .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 1rem; }
         .back-btn { background: transparent; border: none; color: var(--text-gray); padding: 0.5rem 0; cursor: pointer; transition: all 0.3s ease; font-family: var(--font-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
         .back-btn::before { content: '←'; font-size: 1.2rem; color: var(--accent-gold); transition: transform 0.3s ease; }
         .back-btn:hover { color: var(--primary-blue); }
         .back-btn:hover::before { transform: translateX(-5px); }
         .detail-title { font-size: 1.8rem; color: var(--primary-blue); font-weight: 300; letter-spacing: 2px; }
-        .content-layout { display: flex; gap: 3rem; align-items: flex-start; }
-        .video-section { flex: 0 0 340px; position: sticky; top: 3rem; }
-        .video-container { width: 100%; aspect-ratio: 9 / 16; background-color: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .gallery-section { flex: 1; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        
+        .content-layout { display: flex; flex-direction: column; gap: 3rem; align-items: center; }
+        .video-section { width: 100%; max-width: 900px; }
+        .video-container { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .gallery-section { width: 100%; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+        
         .gallery-item { aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; cursor: pointer; background-color: #f0f0f0; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; filter: grayscale(20%); }
         .gallery-item:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1); transform: translateY(-5px); z-index: 10; }
         .gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
         .img-placeholder { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: #f0f0f0; color: #999; font-size: 0.9rem; }
         
-        /* 弹窗样式 */
+        /* ================= 弹窗样式 ================= */
         .lightbox { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); justify-content: center; align-items: center; animation: fadeIn 0.3s ease-in-out; }
         .lightbox.active { display: flex; }
         .lightbox-close { position: absolute; top: 25px; right: 35px; color: var(--text-dark); font-size: 40px; font-weight: 300; cursor: pointer; transition: color 0.3s; z-index: 10000; }
@@ -257,32 +262,20 @@
         .lightbox-next { right: 10px; }
         .lightbox-content { max-width: 85%; max-height: 80vh; border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); object-fit: contain; }
         .lightbox-caption { position: absolute; bottom: 30px; color: var(--text-gray); font-size: 1rem; letter-spacing: 2px; font-family: var(--font-main); }
-        .promo-video-wrapper { width: 80%; max-width: 1000px; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* === 移动端专属的播放按钮“呼吸”动画 === */
-        @keyframes mobilePulse {
-            0% { transform: translate(-50%, -50%) scale(0.8); background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 0 rgba(192, 161, 107, 0.4); }
-            50% { transform: translate(-50%, -50%) scale(0.85); background: rgba(255, 255, 255, 0.95); box-shadow: 0 0 0 15px rgba(192, 161, 107, 0); }
-            100% { transform: translate(-50%, -50%) scale(0.8); background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 0 rgba(192, 161, 107, 0); }
-        }
-
-        /* ================= 移动端适配限位核心修复区 ================= */
+        /* ================= 移动端适配核心修复区 ================= */
         @media (max-width: 800px) {
             .site-background { background-image: url("./photo/background/mobile.jpg"); }
             .page-view { padding: 1.5rem 5%; }
             .hero-banner { margin-top: 3.5rem; margin-bottom: 2rem; width: 100%; } 
             .hero-banner::before { padding-top: 50%; } 
             
-            /* 移动端海报强制显示播放按钮并附加脉冲动画 */
-            .hero-banner::after {
-                opacity: 0.9;
-                animation: mobilePulse 2.5s infinite;
-            }
-            
             .header-section { margin-bottom: 3rem; }
             .main-title { font-size: 2.2rem; }
             .sub-title { font-size: 0.95rem; }
+            .live-btn { padding: 0.8rem 2rem; font-size: 1rem; } /* 移动端略缩按钮 */
             
             .day-card-horizontal { 
                 flex-direction: column; 
@@ -327,11 +320,10 @@
             }
 
             .back-btn span { display: none; } 
-            .promo-video-wrapper { width: 95%; }
             
-            .content-layout { flex-direction: column; align-items: stretch; }
-            .video-section { flex: none; width: 100%; max-width: 100%; margin: 0 auto 2rem auto; position: relative; top: 0;}
-            .gallery-section { width: 100%; }
+            /* 移动端子页面：视频100%宽，图库双列 */
+            .content-layout { flex-direction: column; align-items: stretch; gap: 2rem; }
+            .video-section { max-width: 100%; margin: 0; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
         }
     </style>
@@ -349,12 +341,20 @@
     </div>
 
     <div id="home-view" class="page-view">
-        <div class="hero-banner" id="lang-poster" onclick="openPromoVideo()"></div>
+        <div class="hero-banner" id="lang-poster"></div>
         
         <div class="header-section">
             <h1 class="main-title serif-text" data-i18n="mainTitle">百年淨空</h1>
             <p class="sub-title serif-text" data-i18n="subTitle">地球母親 天下母親 世界和平大會</p>
             <p class="location-text" data-i18n="location">法國巴黎 · 聯合國教科文組織總部1號大廳</p>
+            
+            <div class="live-btn-container">
+                <a href="https://live.xinianfahui.org/%E5%A4%A7%E4%BC%9A%E6%92%AD%E7%89%87-%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.mp4" target="_blank" class="live-btn">
+                    <span class="live-dot"></span>
+                    <span data-i18n="liveBtn">觀看現場直播</span>
+                </a>
+            </div>
+
             <div class="header-divider"></div>
         </div>
         
@@ -420,25 +420,16 @@
         <div class="lightbox-caption" id="lightbox-caption">1 / 20</div>
     </div>
 
-    <div id="promo-modal" class="lightbox">
-        <span class="lightbox-close" onclick="closePromoVideo()">&times;</span>
-        <div class="promo-video-wrapper">
-            <iframe id="promo-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
-        </div>
-    </div>
-
     <script>
-        const promoVideos = {
-            zh: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", 
-            en: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1", 
-            fr: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  
-        };
-
+        // ==========================================
+        // 多语言文案词典 (增加直播按钮词条)
+        // ==========================================
         const translations = {
             zh: {
                 mainTitle: "百年淨空", 
                 subTitle: "地球母親 天下母親 世界和平大會", 
                 location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
+                liveBtn: "觀看現場直播", // 新增
                 d2Week: "星期日", d2Desc: "三時繫念法會",
                 d3Week: "星期一", d3Desc: "世界和平大會", 
                 d4Week: "星期二", d4Desc: "世界和平大會",
@@ -448,6 +439,7 @@
                 mainTitle: "One Hundred Year Master Chin Kung", 
                 subTitle: "Mother Earth Mother of All<br>International Conference for World Harmony<br>The Role of Women in Promoting Peace", 
                 location: "UNESCO Room 1, 125 Avenue de Suffren, 75007 Paris, France",
+                liveBtn: "Watch Live Stream", // 新增
                 d2Week: "SUNDAY", d2Desc: "Thrice Yearning Ceremony",
                 d3Week: "MONDAY", d3Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace", 
                 d4Week: "TUESDAY", d4Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace",
@@ -457,6 +449,7 @@
                 mainTitle: "Centenaire du Maître Chin Kung", 
                 subTitle: "Terre Mère, Mère du Monde<br>Conférence Internationale pour l'Harmonie Mondiale<br>Le Rôle des Femmes dans la Promotion de la Paix", 
                 location: "UNESCO Salle 1, 125 Avenue de Suffren, 75007 Paris, France",
+                liveBtn: "Regarder le Direct", // 新增
                 d2Week: "DIMANCHE", d2Desc: "Cérémonie de l'Invocation en Trois Temps",
                 d3Week: "LUNDI", d3Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix", 
                 d4Week: "MARDI", d4Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix",
@@ -533,21 +526,6 @@
             }
         }
 
-        const promoModal = document.getElementById('promo-modal');
-        const promoIframe = document.getElementById('promo-iframe');
-
-        function openPromoVideo() {
-            promoIframe.src = promoVideos[currentLang];
-            promoModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; 
-        }
-
-        function closePromoVideo() {
-            promoModal.classList.remove('active');
-            document.body.style.overflow = 'auto'; 
-            promoIframe.src = ""; 
-        }
-
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
@@ -583,7 +561,6 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 if (lightbox.classList.contains('active')) closeLightbox();
-                if (promoModal.classList.contains('active')) closePromoVideo();
             } else if (event.key === 'ArrowLeft' && lightbox.classList.contains('active')) {
                 changeImage(-1);
             } else if (event.key === 'ArrowRight' && lightbox.classList.contains('active')) {

@@ -241,14 +241,52 @@
         .content-layout { display: flex; flex-direction: column; gap: 3rem; align-items: center; }
         .video-section { width: 100%; max-width: 900px; }
         .video-container { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .gallery-section { width: 100%; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
         
-        .gallery-item { aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; cursor: pointer; background-color: #f0f0f0; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; filter: grayscale(20%); }
-        .gallery-item:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1); transform: translateY(-5px); z-index: 10; }
-        .gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
-        .img-placeholder { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: #f0f0f0; color: #999; font-size: 0.9rem; }
+        /* ================= 全新：瀑布流图库排版 (完美混合横竖屏) ================= */
+        .gallery-section { width: 100%; }
+        .gallery-grid { 
+            column-count: 3; /* 桌面端 3 列瀑布流 */
+            column-gap: 1.5rem; 
+            width: 100%;
+            display: block; /* 覆盖原有的 grid */
+        }
+        
+        .gallery-item { 
+            break-inside: avoid; /* 防止图片跨列截断 */
+            margin-bottom: 1.5rem; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            cursor: pointer; 
+            background-color: transparent; 
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            position: relative; 
+            display: block;
+        }
+
+        .gallery-item img { 
+            width: 100%; 
+            height: auto; /* 自动高度，完美展示原图比例 */
+            display: block; 
+            transition: transform 0.7s ease; 
+            filter: grayscale(20%); 
+        }
+
+        .gallery-item:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.15); transform: translateY(-5px); z-index: 10; }
+        .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%); }
+        
+        /* 无图时的占位提示样式 */
+        .empty-gallery {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            letter-spacing: 1px;
+            width: 100%;
+            column-span: all;
+        }
         
         /* ================= 弹窗样式 ================= */
         .lightbox { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); justify-content: center; align-items: center; animation: fadeIn 0.3s ease-in-out; }
@@ -338,7 +376,16 @@
             
             .content-layout { flex-direction: column; align-items: stretch; gap: 2rem; }
             .video-section { max-width: 100%; margin: 0; }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            
+            /* 移动端图库：2列瀑布流 */
+            .gallery-grid { 
+                column-count: 2; 
+                column-gap: 0.8rem; 
+                display: block; 
+            }
+            .gallery-item {
+                margin-bottom: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -435,7 +482,7 @@
 
     <script>
         // ==========================================
-        // 宣传片直链 (直接调用提供的 MP4)
+        // 宣傳片直鏈
         // ==========================================
         const promoVideos = {
             zh: "https://live.xinianfahui.org/%E5%A4%A7%E4%BC%9A%E6%92%AD%E7%89%87-%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.mp4", 
@@ -443,11 +490,23 @@
             fr: "https://live.xinianfahui.org/%E5%A4%A7%E4%BC%9A%E6%92%AD%E7%89%87-%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.mp4"  
         };
 
+        // ==========================================
+        // 🔥 運營配置中心：每日精修照片數量 🔥
+        // 控制每天要加載多少張圖片，避免出現破圖。
+        // 若設置為 0，會自動顯示多語言的「敬請期待」提示。
+        // ==========================================
+        const dailyPhotoCounts = {
+            2: 25, // 3月08日 (day-2) 的照片數量：25 張
+            3: 0,  // 3月09日 (day-3) 暫無圖片
+            4: 0   // 3月10日 (day-4) 暫無圖片
+        };
+
         const translations = {
             zh: {
                 mainTitle: "百年淨空", 
                 subTitle: "地球母親 天下母親 世界和平大會", 
                 location: "法國巴黎 · 聯合國教科文組織總部1號大廳",
+                emptyGallery: "今日活動照片精修中，敬請期待...", // 無圖提示
                 d2Week: "星期日", d2Desc: "三時繫念法會",
                 d3Week: "星期一", d3Desc: "世界和平大會", 
                 d4Week: "星期二", d4Desc: "世界和平大會",
@@ -457,6 +516,7 @@
                 mainTitle: "One Hundred Year Master Chin Kung", 
                 subTitle: "Mother Earth Mother of All<br>International Conference for World Harmony<br>The Role of Women in Promoting Peace", 
                 location: "UNESCO Room 1, 125 Avenue de Suffren, 75007 Paris, France",
+                emptyGallery: "Today's photos are being retouched, please stay tuned...", 
                 d2Week: "SUNDAY", d2Desc: "Thrice Yearning Ceremony",
                 d3Week: "MONDAY", d3Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace", 
                 d4Week: "TUESDAY", d4Desc: "International Conference for World Harmony:<br>The Role of Women in Promoting Peace",
@@ -466,6 +526,7 @@
                 mainTitle: "Centenaire du Maître Chin Kung", 
                 subTitle: "Terre Mère, Mère du Monde<br>Conférence Internationale pour l'Harmonie Mondiale<br>Le Rôle des Femmes dans la Promotion de la Paix", 
                 location: "UNESCO Salle 1, 125 Avenue de Suffren, 75007 Paris, France",
+                emptyGallery: "Les photos du jour sont en cours de retouche, restez à l'écoute...",
                 d2Week: "DIMANCHE", d2Desc: "Cérémonie de l'Invocation en Trois Temps",
                 d3Week: "LUNDI", d3Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix", 
                 d4Week: "MARDI", d4Desc: "Conférence Internationale pour l'Harmonie Mondiale :<br>Le Rôle des Femmes dans la Promotion de la Paix",
@@ -491,8 +552,14 @@
             document.body.classList.remove('lang-zh', 'lang-en', 'lang-fr');
             document.body.classList.add(`lang-${lang}`);
 
+            // 切換語言時，如果當前是無圖狀態，需要同步翻譯提示文字
             if (!document.getElementById('detail-view').classList.contains('hidden') && currentDateId) {
                 updateDetailTitle();
+                const photoCount = dailyPhotoCounts[currentDayIndex] || 0;
+                if (photoCount === 0) {
+                    const galleryGrid = document.getElementById('gallery-grid');
+                    galleryGrid.innerHTML = `<div class="empty-gallery">${dict.emptyGallery}</div>`;
+                }
             }
         }
 
@@ -517,14 +584,25 @@
             galleryGrid.innerHTML = ''; 
             currentImagesArray = []; 
             
-            for (let i = 1; i <= 20; i++) {
-                const imgPath = `./photo/day-${dayIndex}/${i}.jpg`;
-                currentImagesArray.push(imgPath);
-                
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.innerHTML = `<img src="${imgPath}" alt="Photo ${i}" loading="lazy" onclick="openLightbox(${i - 1})" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>照片上傳中...</div>';">`;
-                galleryGrid.appendChild(item);
+            // 獲取當天對應的配置圖片數量
+            const photoCount = dailyPhotoCounts[dayIndex] || 0;
+            
+            if (photoCount === 0) {
+                // 如果是 0，取消分列並顯示多語言提示文字
+                galleryGrid.style.columnCount = '1'; 
+                galleryGrid.innerHTML = `<div class="empty-gallery">${translations[currentLang].emptyGallery}</div>`;
+            } else {
+                // 恢復 CSS 控制的瀑布流列數，並加載對應數量的圖片
+                galleryGrid.style.columnCount = ''; 
+                for (let i = 1; i <= photoCount; i++) {
+                    const imgPath = `./photo/day-${dayIndex}/${i}.jpg`;
+                    currentImagesArray.push(imgPath);
+                    
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `<img src="${imgPath}" alt="Photo ${i}" loading="lazy" onclick="openLightbox(${i - 1})">`;
+                    galleryGrid.appendChild(item);
+                }
             }
 
             homeView.classList.add('hidden');
@@ -542,7 +620,7 @@
             }
         }
 
-        // --- 宣传视频播放逻辑 (使用原生 Video) ---
+        // --- 宣傳視頻播放邏輯 (原生 Video) ---
         const promoModal = document.getElementById('promo-modal');
         const promoVideoPlayer = document.getElementById('promo-video');
 
@@ -550,14 +628,14 @@
             promoVideoPlayer.src = promoVideos[currentLang];
             promoModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
-            promoVideoPlayer.play(); // 自动播放
+            promoVideoPlayer.play(); 
         }
 
         function closePromoVideo() {
             promoModal.classList.remove('active');
             document.body.style.overflow = 'auto'; 
-            promoVideoPlayer.pause(); // 停止播放
-            promoVideoPlayer.src = ""; // 清空以节省带宽
+            promoVideoPlayer.pause(); 
+            promoVideoPlayer.src = ""; 
         }
 
         const lightbox = document.getElementById('lightbox');
